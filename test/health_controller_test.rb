@@ -11,7 +11,13 @@ class HealthControllerTest < ActionDispatch::IntegrationTest
       setup do
         ENV['COMMIT_HASH'] = '12345'
       end
-      should_respond_with :success, matching: /12345/
+
+      should "respond with hash" do
+        @action.call
+        assert_response :success
+        assert_body_matches /12345/
+      end
+
     end
 
     context "with a version.txt file" do
@@ -21,7 +27,11 @@ class HealthControllerTest < ActionDispatch::IntegrationTest
         HealthController.any_instance.stubs(:version_file).returns(@tmpfile)
       end
 
-      should_respond_with :success, matching: /055c8729cdcc372500a08db659c045e16c4409fb/
+      should "respond with hash from file" do
+        @action.call
+        assert_response :success
+        assert_body_matches /055c8729cdcc372500a08db659c045e16c4409fb/
+      end
 
       teardown do
         @tmpfile.delete
@@ -33,8 +43,13 @@ class HealthControllerTest < ActionDispatch::IntegrationTest
         HealthController.any_instance.stubs(:version_file).returns(nil)
       end
 
-      should_respond_with :success, matching: /#{`git rev-parse HEAD`}/
+      should "respond with hash from git" do
+        @action.call
+        assert_response :success
+        assert_body_matches /#{`git rev-parse HEAD`}/
+      end
     end
+
   end
 
 end

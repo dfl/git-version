@@ -2,6 +2,6 @@
 
 ENV["RAILS_ENV"] = "test"
 
-$:.unshift File.dirname(__FILE__)
-require "rails_app/config/environment"
+require File.expand_path("../lib/git-version", __dir__)
 require "rails/test_help"
+require 'shoulda'

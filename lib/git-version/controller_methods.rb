@@ -1,18 +1,11 @@
 module GitVersion
   module ControllerMethods
-    def html_status(color:)
-      output = <<-HTML
-      <!DOCTYPE html>
-      <html>
-        <body style="background-color: #{color}; color: white; text-align: center; font-family: sans-serif;">
-        Git Version:
-          <p id="revision">#{git_version}</p>
-        </body>
-      </html>
-      HTML
-      output.html_safe
-    end
+    private
 
+    # overload method from Rails::HealthController
+    def html_status(color:)
+      render "version/show", layout: false, locals: { color: color, git_version: git_version }
+    end
 
     def git_version
       from_environment || from_config_file || from_git_repo
